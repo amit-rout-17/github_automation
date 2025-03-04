@@ -20,10 +20,12 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Import routes
 const indexRoutes = require('./routes/index');
 const webhookRoutes = require('./routes/webhook');
+const githubWebhookRoutes = require('./routes/githubWebhook');
 
 // Use routes
 app.use('/', indexRoutes);
 app.use('/api', webhookRoutes);
+app.use('/webhook', githubWebhookRoutes);
 
 // Error handling middleware
 app.use((req, res, next) => {
