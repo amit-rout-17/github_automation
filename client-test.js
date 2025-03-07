@@ -5,6 +5,7 @@
  * This script sends a test request to the webhook endpoint
  */
 
+//We can for later use the http library for this
 const axios = require('axios');
 const readline = require('readline');
 
@@ -28,7 +29,7 @@ async function sendWebhookRequest(prompt, model = config.defaultModel) {
   try {
     console.log(`\nSending request to webhook with prompt: "${prompt}"`);
     console.log(`Using model: ${model}`);
-    
+
     const payload = {
       event: 'content_request',
       data: {
@@ -38,14 +39,14 @@ async function sendWebhookRequest(prompt, model = config.defaultModel) {
         max_tokens: 500
       }
     };
-    
+
     console.log('\nSending request...');
     const response = await axios.post(config.webhookUrl, payload, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
-    
+
     console.log('\n========== RESPONSE ==========');
     console.log('Status:', response.status);
     console.log('Generated Content:');
@@ -54,7 +55,7 @@ async function sendWebhookRequest(prompt, model = config.defaultModel) {
     console.log(`Model: ${response.data.data.model_used}`);
     console.log(`Tokens Used: ${response.data.data.total_tokens}`);
     console.log('==============================\n');
-    
+
     return response.data;
   } catch (error) {
     console.error('\n⚠️ Error sending webhook request:');
@@ -76,15 +77,15 @@ async function main() {
   console.log('🤖 OpenAI Webhook Test Client');
   console.log('========================================');
   console.log(`Webhook URL: ${config.webhookUrl}`);
-  
+
   rl.question('\nEnter your prompt (or press Enter for default): ', async (prompt) => {
     const userPrompt = prompt.trim() || config.defaultPrompt;
-    
+
     rl.question('Enter model (or press Enter for gpt-3.5-turbo): ', async (model) => {
       const userModel = model.trim() || config.defaultModel;
-      
+
       await sendWebhookRequest(userPrompt, userModel);
-      
+
       rl.question('\nDo you want to send another request? (y/n): ', (answer) => {
         if (answer.toLowerCase() === 'y') {
           main();
